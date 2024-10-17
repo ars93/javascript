@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debouncing Example</title>
+  </head>
+  <body>
+    <!-- Search Input Field -->
+    <label for="search">Search: </label>
+    <input type="text" id="search" placeholder="Type something..." />
+
+    <script>
+      // Debouncing function
+      function debounce(func, delay) {
+        let timeoutId // Stores the timeout reference
+
+        return function (...args) {
+          clearTimeout(timeoutId) // Clears previous timeout if it exists
+
+          timeoutId = setTimeout(() => {
+            func.apply(this, args) // Calls the actual function after delay
+          }, delay)
+        }
+      }
+
+      // Actual function to be executed
+      function searchHandler(event) {
+        console.log('Search query:', event.target.value) // Logs search query
+      }
+
+      // Wrap the search handler with debounce (500ms delay)
+      const debouncedSearchHandler = debounce(searchHandler, 500)
+
+      // Attach event listener to the input field
+      const searchInput = document.getElementById('search')
+      searchInput.addEventListener('input', debouncedSearchHandler)
+    </script>
+  </body>
+</html>

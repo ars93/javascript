@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Throttling Example</title>
+    <style>
+      body {
+        height: 2000px; /* To allow scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      Scroll down the page and check the console for throttled scroll events
+    </h1>
+
+    <script>
+      // Throttling function
+      function throttle(func, limit) {
+        let lastFunc
+        let lastRan
+
+        return function (...args) {
+          const context = this
+
+          if (!lastRan) {
+            func.apply(context, args)
+            lastRan = Date.now()
+          } else {
+            clearTimeout(lastFunc)
+            lastFunc = setTimeout(function () {
+              if (Date.now() - lastRan >= limit) {
+                func.apply(context, args)
+                lastRan = Date.now()
+              }
+            }, limit - (Date.now() - lastRan))
+          }
+        }
+      }
+
+      // Example use case: Scroll handler
+      function handleScroll() {
+        console.log('Scroll event at:', new Date().toLocaleTimeString())
+      }
+
+      // Wrap the scroll handler with a throttle of 1000ms
+      const throttledScrollHandler = throttle(handleScroll, 1000)
+
+      // Add the throttled event listener
+      window.addEventListener('scroll', throttledScrollHandler)
+    </script>
+  </body>
+</html>
